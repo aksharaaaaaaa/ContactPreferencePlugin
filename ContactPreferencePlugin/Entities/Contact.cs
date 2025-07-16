@@ -4935,6 +4935,24 @@ namespace DataverseModel
 			}
 		}
 		
+		/// <summary>
+		/// User’s preferred portal language
+		/// </summary>
+		//[Microsoft.Xrm.Sdk.AttributeLogicalNameAttribute("mspp_userpreferredlcid")]
+		//public virtual PowerPageLanguages? MsPp_UserPreferredLcId
+		//{
+		//	[System.Diagnostics.DebuggerNonUserCode()]
+		//	get
+		//	{
+		//		return ((PowerPageLanguages?)(EntityOptionSetEnum.GetEnum(this, "mspp_userpreferredlcid")));
+		//	}
+		//	[System.Diagnostics.DebuggerNonUserCode()]
+		//	set
+		//	{
+		//		this.SetAttributeValue("mspp_userpreferredlcid", value.HasValue ? new Microsoft.Xrm.Sdk.OptionSetValue((int)value) : null);
+		//	}
+		//}
+		
 		[Microsoft.Xrm.Sdk.AttributeLogicalNameAttribute("mspp_userpreferredlcidname")]
 		public string MsPp_UserPreferredLcIdName
 		{

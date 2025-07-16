@@ -181,12 +181,16 @@ namespace DataverseModel
 	{
 		
 		[System.Runtime.Serialization.EnumMemberAttribute()]
-		[OptionSetMetadataAttribute("High", 1)]
-		High = 2,
+		[OptionSetMetadataAttribute("High", 2)]
+		High = 3,
 		
 		[System.Runtime.Serialization.EnumMemberAttribute()]
-		[OptionSetMetadataAttribute("Normal", 0)]
-		Normal = 1,
+		[OptionSetMetadataAttribute("Low", 0)]
+		Low = 1,
+		
+		[System.Runtime.Serialization.EnumMemberAttribute()]
+		[OptionSetMetadataAttribute("Moderate", 1)]
+		Moderate = 2,
 	}
 	
 	/// <summary>

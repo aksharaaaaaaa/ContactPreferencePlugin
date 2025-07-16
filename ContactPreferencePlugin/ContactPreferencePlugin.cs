@@ -54,43 +54,40 @@ namespace ContactPreferencePlugin
                             Conditions =
                             {
                                 new ConditionExpression(Contact.Fields.ParentCustomerId, ConditionOperator.Equal, contact.ParentCustomerId.Id),
-                                new ConditionExpression(Contact.Fields.DoNotEmail, ConditionOperator.Equal, true)
+                                new ConditionExpression(Contact.Fields.DoNotEmail, ConditionOperator.Equal, false)
                             }
                         }
                     };
                     var contactCount= service.RetrieveMultiple(query).Entities.Count;
-                    tracingService.Trace($"{contactCount} contacts with 'Do Not Email' preference found.");
+                    tracingService.Trace($"{contactCount} contacts without 'Do Not Email' preference found.");
 
-                    if (contactCount >= 3)
+                    var updateAccount = new Account { Id = contact.ParentCustomerId.Id };
+                    if (contactCount == 1)
                     {
-                        tracingService.Trace($"Stage {stageNumber++}: More than 3 contacts with 'Do Not Email' preference for related account");
-                        var highRiskAccount = new Account
-                        {
-                            Id = contact.ParentCustomerId.Id,
-                            CR950_RiskLevel = Account_CR950_RiskLevel.High
-                        };
-                        try
-                        {
-                            service.Update(highRiskAccount);
-                            tracingService.Trace($"Stage {stageNumber++}: Account update succeeded.");
-                        }
-                        catch (Exception ex)
-                        {
-                            tracingService.Trace($"Stage {stageNumber++}: Error updating account - {ex.ToString()}");
-                            throw;
-                        }
-
+                        tracingService.Trace($"Stage {stageNumber++}: Only 1 contact reachable via email for related account. Account risk level is moderate.");
+                        updateAccount.CR950_RiskLevel = Account_CR950_RiskLevel.Moderate;
+                    }
+                    else if (contactCount < 1)
+                    {
+                        tracingService.Trace($"Stage {stageNumber++}: No contacts reachable via email for related account.  Account risk level is high.");
+                        updateAccount.CR950_RiskLevel = Account_CR950_RiskLevel.High;
                     }
                     else
                     {
-                        var normalRiskAccount = new Account
-                        {
-                            Id = contact.ParentCustomerId.Id,
-                            CR950_RiskLevel = Account_CR950_RiskLevel.Normal
-                        };
-                        service.Update(normalRiskAccount);
-                        tracingService.Trace($"Less than 3 contacts with 'Do Not Email' preference. Account risk level is normal.");
+                        tracingService.Trace($"Multiple contacts reachable via email for related account. Account risk level is normal.");
+                        updateAccount.CR950_RiskLevel = Account_CR950_RiskLevel.Low;
                     }
+                    try
+                    {
+                        service.Update(updateAccount);
+                        tracingService.Trace($"Stage {stageNumber++}: Account update succeeded.");
+                    }
+                    catch (Exception ex)
+                    {
+                        tracingService.Trace($"Stage {stageNumber++}: Error updating account - {ex.ToString()}");
+                        throw;
+                    }
+
                 }
                 else
                 {
